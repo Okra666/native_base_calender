@@ -8,6 +8,8 @@ import { Container, Content, Text, Card, Header, Body, Button, Title, CardItem,
 } from 'native-base';
 import { Image,StyleSheet,Dimensions,View } from "react-native";
 import { useNavigation, useRoute, DrawerActions } from '@react-navigation/native';
+import axios from 'axios';
+
 
 export default function(props){
     const navigation = useNavigation();
@@ -25,6 +27,29 @@ class Connect extends Component {
         helper_comment: "",
       };
     }
+
+    authPost = () => {
+
+      // console.log("test")
+
+      //受け取り側が素のPHP($_POST['']なのでstringifyする)
+      //Laravelとかならいらない
+      var qs = require('qs');
+  
+      axios
+        .post('http://192.168.3.17/work/react_native_api.php', qs.stringify({helper_comment: this.state.helper_comment}))
+        .then((res) => {
+          if(res.data.auth){
+            alert('認証OK');
+          }else{
+            alert('認証NG');
+          }
+        })
+        .catch(error => console.log(error));
+    }
+
+
+
 
     render(){
 
@@ -68,7 +93,9 @@ class Connect extends Component {
                 <Text>カメラ</Text>
               </Button>
     
-              <Button block style={styles.btn}>
+              <Button block style={styles.btn}
+                 onPress={() => this.authPost(this.state.helper_comment)}
+              >
                 <Text>送信</Text>
               </Button>
     
